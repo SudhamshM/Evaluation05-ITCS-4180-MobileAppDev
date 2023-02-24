@@ -246,6 +246,10 @@ public class ForumsFragment extends Fragment
                     Log.d(TAG, "setupUI: post/user id: " + mForum.getCreated_by().getUser_id() + ", " +userId);
                     mBinding.imageViewDeleteForum.setVisibility(View.INVISIBLE);
                 }
+                else
+                {
+                    mBinding.imageViewDeleteForum.setVisibility(View.VISIBLE);
+                }
                 binding.textViewWelcome.setText("Welcome " + userFirstName + " " + userLastName + "!");
 
             }

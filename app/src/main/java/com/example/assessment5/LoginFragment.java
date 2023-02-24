@@ -120,6 +120,7 @@ public class LoginFragment extends Fragment
                                                 editor.putString(getString(R.string.lname), loginResponse.user_lname);
                                                 editor.putInt(getString(R.string.user_id), loginResponse.user_id);
                                                 editor.apply();
+                                                MainActivity.setUser(new User(sharedPref));
                                                 String token = sharedPref.getString(getString(R.string.token), "null");
                                                 Log.d(TAG, "run: shared prefs updated, token: " + token);
 

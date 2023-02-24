@@ -91,6 +91,7 @@ public class ForumMessagesFragment extends Fragment {
                 } else {
                     //TODO : send the message to the API
                     sendMessage(message);
+                    binding.editTextMessage.setText("");
                 }
             }
         });
@@ -133,7 +134,8 @@ public class ForumMessagesFragment extends Fragment {
 
                     if (messagesResponse.status.equals("ok"))
                     {
-                        messages = messagesResponse.messages;
+                        messages.clear();
+                        messages.addAll(messagesResponse.messages);
                         getActivity().runOnUiThread(new Runnable()
                         {
                             @Override
@@ -155,7 +157,6 @@ public class ForumMessagesFragment extends Fragment {
         //TODO: get the messages from the API
         HttpUrl url = HttpUrl.parse("https://www.theappsdr.com/api/message/add")
                 .newBuilder()
-                .addPathSegment(mForum.getThread_id())
                 .build();
 
         FormBody formBody = new FormBody.Builder()
@@ -181,19 +182,11 @@ public class ForumMessagesFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
             {
+                String respBody = response.body().string();
+                Log.d(TAG, "onResponse: send message: " + respBody);
                 if (response.isSuccessful())
                 {
-                    String respBody = response.body().string();
-                    Log.d(TAG, "onResponse: send message: " + respBody);
-                    messages.clear();
-                    getActivity().runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            getMessages();
-                        }
-                    });
+                    getMessages();
                 }
             }
         });
@@ -234,16 +227,59 @@ public class ForumMessagesFragment extends Fragment {
                 mBinding.textViewMessageCreatorName.setText(message.created_by.getFname() + " " + message.created_by.getLname());
 
                 //TODO: setup the rest of the UI the delete icon ..
+                if (user.id != mMessage.created_by.getUser_id())
+                {
+                    mBinding.imageViewDeleteMessage.setVisibility(View.INVISIBLE);
+                }
+                else
+                {
+                    mBinding.imageViewDeleteMessage.setVisibility(View.VISIBLE);
+                }
                 mBinding.imageViewDeleteMessage.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View view)
                     {
+                        deleteMessage(mMessage.message_id);
+                    }
+                });
+            }
+            private void deleteMessage(String message_id)
+            {
+                HttpUrl url = HttpUrl.parse("https://www.theappsdr.com/api/message/delete")
+                        .newBuilder()
+                        .addPathSegment(mMessage.message_id)
+                        .build();
 
+                Request request = new Request.Builder()
+                        .url(url)
+                        .addHeader("Authorization", "BEARER " + user.token)
+                        .build();
+
+                client.newCall(request).enqueue(new Callback()
+                {
+                    @Override
+                    public void onFailure(@NonNull Call call, @NonNull IOException e)
+                    {
+                        Log.d(TAG, "onFailure: delete message");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException
+                    {
+                        if (response.isSuccessful())
+                        {
+                            String respBody = response.body().string();
+                            Log.d(TAG, "onResponse: delete response: " + respBody);
+                            getMessages();
+                        }
                     }
                 });
             }
         }
+
+
     }
 
     static class ForumMessagesResponse
