@@ -95,12 +95,13 @@ public class CreateForumFragment extends Fragment
                             {
                                 Log.d(LoginFragment.TAG, "onResponse: createFragment: " +respBody);
                                 CreateForumResponse createForumResponse = new Gson().fromJson(respBody, CreateForumResponse.class);
+                                Log.d(LoginFragment.TAG, "onResponse: respCreate Post: " + createForumResponse);
                                 getActivity().runOnUiThread(new Runnable()
                                 {
                                     @Override
                                     public void run()
                                     {
-                                        String toaster = "Thread #" + createForumResponse.getThread_id();
+                                        String toaster = "Thread #" + createForumResponse.thread.thread_id;
                                         Toast.makeText(getActivity(), toaster, Toast.LENGTH_SHORT).show();
                                     }
                                 });

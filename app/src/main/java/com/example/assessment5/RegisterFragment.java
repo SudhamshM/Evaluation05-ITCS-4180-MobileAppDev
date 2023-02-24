@@ -119,8 +119,7 @@ public class RegisterFragment extends Fragment
                                         editor.putString(getString(R.string.lname), registerResponse.user_lname);
                                         editor.putString(getString(R.string.user_id), registerResponse.user_id);
                                         editor.apply();
-                                        User user = new User(sharedPref);
-                                        MainActivity.setUser(user);
+                                        MainActivity.setUser(new User(sharedPref));
                                         mListener.gotoLogin();
                                     }
                                 }

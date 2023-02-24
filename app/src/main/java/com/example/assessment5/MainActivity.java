@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity
                 .addToBackStack(null)
                 .commit();
         clearPrefs();
+        user = new User();
     }
 
     @Override
