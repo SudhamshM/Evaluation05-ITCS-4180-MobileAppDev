@@ -16,13 +16,14 @@ public class MainActivity extends AppCompatActivity
 {
 
     SharedPreferences sharedPref;
-    User user = new User();
+    private static User user = new User();
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sharedPref = getPreferences(Context.MODE_PRIVATE);
+        user = new User(sharedPref);
 
         //TODO: Check if the user is authenticated or no..
         if (!sharedPref.getString(getString(R.string.token), "null").equals("null"))
@@ -104,11 +105,22 @@ public class MainActivity extends AppCompatActivity
                 .commit();
     }
 
+
     /**
      * Clear the shared preferences file.
      */
     public void clearPrefs()
     {
         sharedPref.edit().clear().apply();
+    }
+
+    public static void setUser(User user)
+    {
+        MainActivity.user = user;
+    }
+
+    public static User getUser()
+    {
+        return MainActivity.user;
     }
 }

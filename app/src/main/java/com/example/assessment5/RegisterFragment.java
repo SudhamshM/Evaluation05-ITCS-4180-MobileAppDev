@@ -1,6 +1,7 @@
 package com.example.assessment5;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,8 @@ public class RegisterFragment extends Fragment
 {
     private final OkHttpClient client = new OkHttpClient();
     public static final String TAG = LoginFragment.TAG;
+    SharedPreferences sharedPref;
+    SharedPreferences.Editor editor;
     public RegisterFragment() {
         // Required empty public constructor
     }
@@ -46,6 +49,10 @@ public class RegisterFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Register");
+
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        editor = sharedPref.edit();
+
         binding.buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,6 +114,13 @@ public class RegisterFragment extends Fragment
                                     }
                                     else if (registerResponse.status.equals("ok"))
                                     {
+                                        editor.putString(getString(R.string.token), registerResponse.token);
+                                        editor.putString(getString(R.string.fname), registerResponse.user_fname);
+                                        editor.putString(getString(R.string.lname), registerResponse.user_lname);
+                                        editor.putString(getString(R.string.user_id), registerResponse.user_id);
+                                        editor.apply();
+                                        User user = new User(sharedPref);
+                                        MainActivity.setUser(user);
                                         mListener.gotoLogin();
                                     }
                                 }

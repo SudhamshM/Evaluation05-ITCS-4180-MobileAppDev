@@ -33,6 +33,7 @@ public class LoginFragment extends Fragment
     public static final String TAG = "Evaluation5";
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
+    User user;
 
     public LoginFragment()
     {
@@ -50,6 +51,7 @@ public class LoginFragment extends Fragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Login");
+        user = MainActivity.getUser();
 
         sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         editor = sharedPref.edit();
